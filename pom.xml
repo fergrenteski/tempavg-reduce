@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>br.pucpr</groupId>
+    <artifactId>tempavg-reduce</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>tempavg-reduce</name>
+    <description>MapReduce (Hadoop) para calculo da media de temperaturas usando o par (soma, contagem)</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Hadoop 3.3.x tem suporte oficial ao Java 8/11. Compilamos com release 11. -->
+        <maven.compiler.release>11</maven.compiler.release>
+        <hadoop.version>3.3.6</hadoop.version>
+    </properties>
+
+    <dependencies>
+        <!-- API do Hadoop MapReduce. 'provided' porque o cluster ja fornece as libs em runtime. -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>tempavg-reduce</finalName>
+        <plugins>
+            <!-- Compilador -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+
+            <!-- Gera um JAR executavel para rodar com: hadoop jar tempavg-reduce.jar ... -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <!-- Sem Main-Class fixo: o 'hadoop jar' escolhe a classe
+                             (Main ou CorrelationMain) pelo 1o argumento. -->
+
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
