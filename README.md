@@ -50,6 +50,28 @@ Ex.: `7,5,mar,fri,86.2,26.2,94.3,5.1,8.2,51,6.7,0,0`
 
 O Map usa **month** (índice 2) como chave e **temp** (índice 8) como valor.
 
+### O que significa cada coluna
+
+| Coluna  | Significado |
+|---------|-------------|
+| `X`, `Y` | Coordenadas espaciais no mapa do Parque Natural de Montesinho (Portugal), grade 1–9 × 2–9 |
+| `month` | Mês (`jan` … `dec`) |
+| `day`   | Dia da semana (`mon` … `sun`) |
+| `FFMC`  | *Fine Fuel Moisture Code* — umidade do combustível fino da superfície (folhas, gravetos). Quanto maior, mais seco e mais fácil de **iniciar** fogo |
+| `DMC`   | *Duff Moisture Code* — umidade da camada orgânica pouco compactada logo abaixo da superfície (secagem de médio prazo) |
+| `DC`    | *Drought Code* — umidade da camada orgânica profunda e compacta; indica **seca de longo prazo** |
+| `ISI`   | *Initial Spread Index* — velocidade esperada de **propagação** inicial do fogo (combina FFMC + vento) |
+| `temp`  | Temperatura em °C |
+| `RH`    | Umidade relativa do ar em % |
+| `wind`  | Velocidade do vento em km/h |
+| `rain`  | Chuva acumulada em mm/m² |
+| `area`  | Área queimada em hectares (0 = sem área significativa queimada) |
+
+`FFMC`, `DMC`, `DC` e `ISI` são componentes do **FWI** (*Fire Weather Index*),
+o sistema canadense de índice de risco de incêndio florestal. Por isso `DMC × DC`
+e `FFMC × ISI` aparecem entre as maiores correlações: são índices derivados uns
+dos outros.
+
 ## Compilar
 
 ```bash
