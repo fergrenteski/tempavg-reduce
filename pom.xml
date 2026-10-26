@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>tempavg-reduce</name>
-    <description>MapReduce (Hadoop) para calculo da media de temperaturas usando o par (soma, contagem)</description>
+    <description>MapReduce (Hadoop) para matriz de correlacao de Pearson do dataset Forest Fires</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,7 +51,7 @@
                             <goal>shade</goal>
                         </goals>
                         <!-- Sem Main-Class fixo: o 'hadoop jar' escolhe a classe
-                             (Main ou CorrelationMain) pelo 1o argumento. -->
+                             (MatrizCorrelacao) pelo 1o argumento. -->
 
                     </execution>
                 </executions>
