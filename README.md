@@ -97,6 +97,55 @@ sort -t$'\t' -k2 -g saida/part-r-00000   # ordena por r
 > Se rodar em modo local com JDK 17, adicione as flags de módulo do Hadoop:
 > `export HADOOP_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"`
 
+## Versão em Python (Hadoop Streaming)
+
+`python/matriz_correlacao.py` faz o mesmo cálculo em Python, com **tudo em
+português, inclusive os nomes das colunas**. O Hadoop roda o script via
+**Hadoop Streaming**: o Map e o Reduce leem do `stdin` e escrevem
+`chave<TAB>valor` no `stdout`; o Hadoop faz o shuffle/sort entre eles.
+
+Um só arquivo, com duas etapas:
+
+| Função    | Papel |
+|-----------|-------|
+| `mapear`  | **Map**: para cada linha, emite `"colunaA x colunaB" → 1,x,y,x·y,x²,y²` (os 6 somatórios de 1 ponto) para cada par |
+| `reduzir` | **Reduce**: as linhas chegam ordenadas por chave; soma os somatórios de cada par e aplica `pearson()` uma única vez |
+
+Nomes das colunas na versão Python:
+
+| Original | Python |
+|----------|--------|
+| `X`, `Y` | `coord_x`, `coord_y` |
+| `FFMC`   | `umidade_combustivel_fino` |
+| `DMC`    | `umidade_materia_organica` |
+| `DC`     | `indice_seca` |
+| `ISI`    | `indice_propagacao` |
+| `temp`   | `temperatura` |
+| `RH`     | `umidade_relativa` |
+| `wind`   | `vento` |
+| `rain`   | `chuva` |
+| `area`   | `area_queimada` |
+
+### Rodar no Hadoop
+
+```bash
+hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
+  -files python/matriz_correlacao.py \
+  -mapper  "python3 matriz_correlacao.py mapear" \
+  -reducer "python3 matriz_correlacao.py reduzir" \
+  -input data/forestfireinput.csv \
+  -output saida-python
+sort -t$'\t' -k2 -g saida-python/part-00000
+```
+
+### Testar sem Hadoop (simula o shuffle com `sort`)
+
+```bash
+python3 python/matriz_correlacao.py mapear < data/forestfireinput.csv \
+  | sort -t$'\t' -k1,1 \
+  | python3 python/matriz_correlacao.py reduzir
+```
+
 ## Resultados
 
 Maiores correlações no dataset:
